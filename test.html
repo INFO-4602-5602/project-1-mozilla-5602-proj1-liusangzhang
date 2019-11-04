@@ -35,28 +35,15 @@
 	
 	</head>
 	<body>
-
-		<div class="col-sm-7">
-			<label>Choose a country</label>
-			<select id = "country_select">
-			</select>
+		<div class="col-sm-6 radarChart">
 		</div>
-		<div class="col-sm-6 radarChart"></div>
-			<!-- <select id = "language_select" >
-				<option selected="selected">English</option>
-				<option>French</option>
-				<option>Spanish</option>
-				<option>German</option>
-				<option>pt-br</option>
-				<option>Other</option>
-			</select> -->
-		<div class="col-sm-5 radarChart2"></div>
+		<div class="col-sm-6 radarChart2"></div>
 		
 
-		<script src="radarChart.js"></script>	
+		<!-- <script src="radarChart.js"></script> -->
+		<script src="one_example.js"></script>	
 		<script>
-			d3.csv("toyData.csv", function(data){
-				console.log(data.length);
+			d3.csv("10000data.csv", function(data){
 				// var obj = d3.map(data, function(d) {return d.Country});
 				var countryCount = d3.nest()
 					.key(function (d) {
@@ -79,9 +66,10 @@
 				select
 				.on("change", function(d) {
 					var value = d3.select(this).property("value");
-					var one_country = data.filter(function(d){return d.Country == value})
-					var totalMean = mean_values(one_country);
-					test(totalMean, "radarChart");
+					var totalMean = mean_values(data);
+					var one_country = data.filter(function(d){return d.Country == value});
+					var one_country_Mean = mean_values(one_country);
+					test(totalMean, one_country_Mean, "radarChart");
 
 					var one_language_data_mean = mean_values_lang(one_country);
 					
@@ -142,42 +130,7 @@
 				   
 				   return totalMean;
 				}
-				// var select = d3.select("#country_select")
-				// 			.append("select")
-				// 			.on('change', searchNode);
 
-				// select.selectAll("option")
-				// 	.data(graph.nodes)
-				// 	.enter()
-				// 	.append("option")
-				// 	.attr("value", function(d) {return d.name;})
-				// 	.text(function(d) {
-				// 		return d.name; 
-				// 	});
-
-				// function searchNode() {
-
-				// 	//find the node
-				// 	var selectedVal = this.options[this.selectedIndex].value
-
-				// 	var node = svg.selectAll(".node");
-
-				// 	if (selectedVal == "none") {
-				// 	node.style("stroke", "white").style("stroke-width", "1");
-				// 	} else {
-				// 	var selected = node.filter(function(d, i) {
-				// 		return d.name != selectedVal;
-				// 	});
-				// 	selected.style("opacity", "0");
-				// 	var link = svg.selectAll(".link")
-				// 	link.style("opacity", "0");
-				// 	d3.selectAll(".node, .link").transition()
-				// 		.duration(2000)
-				// 		.style("opacity", 1);
-
-
-				// 	}
-				// }
 
 			    var totalMean = [d3.mean(data.map(function(d){ return d.Price})),
 			       d3.mean(data.map(function(d){ return d.Features})),
@@ -210,106 +163,6 @@
 			       d3.mean(filteredData1.map(function(d){ return d.ExpertRecommendation})),
 			       d3.mean(filteredData1.map(function(d){ return d.FriendorFamilyRecommendation})),
 			       d3.mean(filteredData1.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean1);
-
-
-				// var filteredData2 = data.filter(function(d) { 
-				//         if( d["Language"] == "French")
-				//         { 
-				//             return d;
-				//             console.log(filteredData2);
-				//         } 
-				//     })
-				//     var totalMean2 = [d3.mean(filteredData2.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean1);
-
-
-			    //    	var filteredData3 = data.filter(function(d) { 
-				//         if( d["Language"] == "German")
-				//         { 
-				//             return d;
-				//             console.log(filteredData4);
-				//         } 
-				//     })
-				//     var totalMean3 = [d3.mean(filteredData3.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean3);
-
-			    //    	var filteredData4 = data.filter(function(d) { 
-				//         if( d["Language"] == "German")
-				//         { 
-				//             return d;
-				//             console.log(filteredData4);
-				//         } 
-				//     })
-				//     var totalMean4 = [d3.mean(filteredData4.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean4);
-
-
-			    //    	var filteredData5 = data.filter(function(d) { 
-				//         if( d["Language"] == "pt-br")
-				//         { 
-				//             return d;
-				//             console.log(filteredData5);
-				//         } 
-				//     })
-				//     var totalMean5 = [d3.mean(filteredData5.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean5);
-
-
-			    //    	var filteredData6 = data.filter(function(d) { 
-				//         if( d["Language"] == "French")
-				//         { 
-				//             return d;
-				//             console.log(filteredData6);
-				//         } 
-				//     })
-				//     var totalMean6 = [d3.mean(filteredData6.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean6);
 
 
 
@@ -317,7 +170,7 @@
 				
 
 
-			function test(totalMean, class_id) {
+			function test(totalMean, one_country_Mean, class_id) {
 				var margin = {top: 300, right: 100, bottom: 100, left: 100},
 				width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
 				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
@@ -326,8 +179,7 @@
 				////////////////////////// Data ////////////////////////////// 
 				////////////////////////////////////////////////////////////// 
 
-				var data = [
-				  [
+				var data_template = [
 					{axis:"Price",value:0},
 					{axis:"Features",value:0},
 					{axis:"Safety",value:0},
@@ -337,45 +189,24 @@
 					{axis:"UserReviews",value:0},
 					{axis:"ExpertRecommendation",value:0},
 					{axis:"FriendorFamilyRecommendation",value:0},
-					{axis:"Convenience",value:0}		],
-				// [
-				// 	{axis:"Price",value:4},
-				// 	{axis:"Features",value:4},
-				// 	{axis:"Safety",value:4},
-				// 	{axis:"Security",value:4},
-				// 	{axis:"Privacy",value:4},
-				// 	{axis:"Reliability",value:5.17},
-				// 	{axis:"UserReviews",value:3.5},
-				// 	{axis:"ExpertRecommendation",value:6.3},
-				// 	{axis:"FriendorFamilyRecommendation",value:6},
-				// 	{axis:"Convenience",value:4}		],
-				// [
-				// 	{axis:"Price",value:3},
-				// 	{axis:"Features",value:3},
-				// 	{axis:"Safety",value:3},
-				// 	{axis:"Security",value:3},
-				// 	{axis:"Privacy",value:3},
-				// 	{axis:"Reliability",value:3},
-				// 	{axis:"UserReviews",value:3},
-				// 	{axis:"ExpertRecommendation",value:3},
-				// 	{axis:"FriendorFamilyRecommendation",value:3},
-				// 	{axis:"Convenience",value:3}		],	
-				// [
-				// 	{axis:"Price",value:1},
-				// 	{axis:"Features",value:1},
-				// 	{axis:"Safety",value:1},
-				// 	{axis:"Security",value:1},
-				// 	{axis:"Privacy",value:1},
-				// 	{axis:"Reliability",value:1},
-				// 	{axis:"UserReviews",value:1},
-				// 	{axis:"ExpertRecommendation",value:1},
-				// 	{axis:"FriendorFamilyRecommendation",value:1},
-				// 	{axis:"Convenience",value:5}		]
+					{axis:"Convenience",value:0}
 				];
+				
+				var data = [];
+
+				for(var i = 0; i < 2; i++) {
+					var cur_data = JSON.parse(JSON.stringify(data_template));
+					data.push(cur_data);
+				}
 
 				for(var i = 0; i < data[0].length; i++) {
-					data[0][i].value = totalMean[i];
+					data[0][i].value = one_country_Mean[i];
 				}
+
+				for(var i = 0; i < data[1].length; i++) {
+					data[1][i].value = totalMean[i];
+				}
+
 				// for(var j = 0; j < data[1].length; j++) {
 				// 	data[0][j].value = totalMean2[j];
 				// }
@@ -393,7 +224,7 @@
 					  h: height,
 					  margin: margin,
 					  maxValue: 0.5,
-					  levels: 5,
+					  levels: 4,
 					  roundStrokes: true,
 					  color: color
 				};
@@ -405,6 +236,7 @@
 
 			function test2(totalMean_language, class_id) {
 				var margin = {top: 300, right: 100, bottom: 100, left: 100},
+				// legendPosition = {x: 25, y: 25},
 				width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
 				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
 						
@@ -433,15 +265,14 @@
 					if(cur_totalMean.length == 0) {
 						continue;
 					}
-					console.log(data_template.length)
+
 					var cur_data = JSON.parse(JSON.stringify(data_template));
 					for(var j = 0; j < data_template.length; j++) {
 						cur_data[j].value = cur_totalMean[j];
 					}
 					data.push(cur_data);
 				}
-				console.log("----------")
-				console.log(totalMean_language)
+				
 
 
 				////////////////////////////////////////////////////////////// 
@@ -455,41 +286,18 @@
 					 w: width,
 					  h: height,
 					  margin: margin,
-					  maxValue: 0.5,
-					  levels: 5,
+					  // legendPosition: legendPosition,
+					  maxValue: 0.,
+					  levels: 4,
 					  roundStrokes: true,
 					  color: color
 				};
+				
 
 				//Call function to draw the Radar chart
 				RadarChart("." + class_id, data, radarChartOptions);
 				
 			}
-
-
-			// d3.csv("20171013111831-SurveyExport.csv", function(data){
-			// 	var filteredData = data.filter(function(d) { 
-			// 	        if( d["Language"] == "English")  
-			// 	        { 
-			// 	            return d;
-			// 	            console.log(filteredData);
-			// 	        } 
-			// 	    })
-			// 	    var totalMean = [d3.mean(filteredData.map(function(d){ return d.Price})),
-			//        d3.mean(filteredData.map(function(d){ return d.Features})),
-			//        d3.mean(filteredData.map(function(d){ return d.Safety})),
-			//        d3.mean(filteredData.map(function(d){ return d.Security})),
-			//        d3.mean(filteredData.map(function(d){ return d.Privacy})),
-			//        d3.mean(filteredData.map(function(d){ return d.Reliability})),
-			//        d3.mean(filteredData.map(function(d){ return d.UserReviews})),
-			//        d3.mean(filteredData.map(function(d){ return d.ExpertRecommendation})),
-			//        d3.mean(filteredData.map(function(d){ return d.FriendorFamilyRecommendation})),
-			//        d3.mean(filteredData.map(function(d){ return d.Convenience}))
-			//        ];
-			// });
-			
-			// test();
-			
 		</script>
 	</body>
 </html>

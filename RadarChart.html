@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
+		<title>Radar Chart</title>
+
+		<!-- Google fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300" rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+		<!-- D3.js -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+		
+		<style>
+			body {
+				font-family: 'Open Sans', sans-serif;
+				font-size: 11px;
+				font-weight: 300;
+				fill: #242424;
+				text-align: center;
+				text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+				cursor: default;
+			}
+			
+			.legend {
+				font-family: 'Raleway', sans-serif;
+				fill: #333333;
+			}
+			
+			.tooltip {
+				fill: #333333;
+			}
+		</style>
+	
+	</head>
+	<body>
+		<div class="col-sm-6 radarChart">
+			<label></label>
+		</div>
+		<div class="col-sm-6 radarChart2"></div>
+		
+
+		<!-- <script src="radarChart.js"></script> -->
+		<script src="one_example.js"></script>	
+		<script>
+			d3.csv("10000data.csv", function(data){
+				// var obj = d3.map(data, function(d) {return d.Country});
+				var countryCount = d3.nest()
+					.key(function (d) {
+						return d.Country;
+					})
+					.rollup(function (leaves) {
+						return leaves.length;
+					})
+					.entries(data);
+				for(var i = 0; i < countryCount.length; i++) {
+					// console.log(countryCount[i].key)
+					// console.log(countryCount[i])
+				}
+
+				// dropdown
+				var select = d3.select("body")
+				.append("div")
+				.append("select")
+
+				select
+				.on("change", function(d) {
+					var value = d3.select(this).property("value");
+					var totalMean = mean_values(data);
+					var one_country = data.filter(function(d){return d.Country == value});
+					var one_country_Mean = mean_values(one_country);
+					test(totalMean, one_country_Mean, "radarChart");
+
+					var one_language_data_mean = mean_values_lang(one_country);
+					
+					console.log("asdfa", one_language_data_mean)
+					test2(one_language_data_mean, "radarChart2")
+
+					// test(totalMean, "radarChart2");
+					// alert(value);
+				});
+
+				select.selectAll("option")
+				.data(countryCount)
+				.enter()
+					.append("option")
+					.attr("value", function (d) { return d.key; })
+					.text(function (d) { return d.key; });
+
+
+				// var one_country = data.filter(function(d){return d.Country == "United States"})
+				
+				// var one_language_data_mean = mean_values_lang(one_country);
+				// console.log(one_language_data_mean)
+
+
+				function mean_values_lang(one_country_data) {
+					var default_language_list = ['English', 'German', 'French', 'Spanish', 'Italian', 'pt-br'];
+
+					var languages = d3.map(one_country_data, function(d) {return d.Language}).keys();
+					console.log(languages)
+
+					var totalMean = [];
+					for(var i = 0; i < default_language_list.length; i++) {
+						var item = default_language_list[i];
+						var one_language_data_mean = [];
+						if(languages.includes(item)) {
+							var one_language_data = one_country_data.filter(function(d){return d.Language == item});
+							one_language_data_mean = mean_values(one_language_data);
+						}
+
+						totalMean.push(one_language_data_mean);
+					}
+
+					return totalMean;
+				}
+
+				function mean_values(data) {
+					var totalMean = [d3.mean(data.map(function(d){ return d.Price})),
+			       d3.mean(data.map(function(d){ return d.Features})),
+			       d3.mean(data.map(function(d){ return d.Safety})),
+			       d3.mean(data.map(function(d){ return d.Security})),
+			       d3.mean(data.map(function(d){ return d.Privacy})),
+			       d3.mean(data.map(function(d){ return d.Reliability})),
+			       d3.mean(data.map(function(d){ return d.UserReviews})),
+			       d3.mean(data.map(function(d){ return d.ExpertRecommendation})),
+			       d3.mean(data.map(function(d){ return d.FriendorFamilyRecommendation})),
+			       d3.mean(data.map(function(d){ return d.Convenience}))
+				   ];
+				   
+				   return totalMean;
+				}
+				// var select = d3.select("#country_select")
+				// 			.append("select")
+				// 			.on('change', searchNode);
+
+				// select.selectAll("option")
+				// 	.data(graph.nodes)
+				// 	.enter()
+				// 	.append("option")
+				// 	.attr("value", function(d) {return d.name;})
+				// 	.text(function(d) {
+				// 		return d.name; 
+				// 	});
+
+				// function searchNode() {
+
+				// 	//find the node
+				// 	var selectedVal = this.options[this.selectedIndex].value
+
+				// 	var node = svg.selectAll(".node");
+
+				// 	if (selectedVal == "none") {
+				// 	node.style("stroke", "white").style("stroke-width", "1");
+				// 	} else {
+				// 	var selected = node.filter(function(d, i) {
+				// 		return d.name != selectedVal;
+				// 	});
+				// 	selected.style("opacity", "0");
+				// 	var link = svg.selectAll(".link")
+				// 	link.style("opacity", "0");
+				// 	d3.selectAll(".node, .link").transition()
+				// 		.duration(2000)
+				// 		.style("opacity", 1);
+
+
+				// 	}
+				// }
+
+			    var totalMean = [d3.mean(data.map(function(d){ return d.Price})),
+			       d3.mean(data.map(function(d){ return d.Features})),
+			       d3.mean(data.map(function(d){ return d.Safety})),
+			       d3.mean(data.map(function(d){ return d.Security})),
+			       d3.mean(data.map(function(d){ return d.Privacy})),
+			       d3.mean(data.map(function(d){ return d.Reliability})),
+			       d3.mean(data.map(function(d){ return d.UserReviews})),
+			       d3.mean(data.map(function(d){ return d.ExpertRecommendation})),
+			       d3.mean(data.map(function(d){ return d.FriendorFamilyRecommendation})),
+			       d3.mean(data.map(function(d){ return d.Convenience}))
+			       ];
+			    //    test(totalMean);
+
+
+				var filteredData1 = data.filter(function(d) { 
+				        if( d["Language"] == "English")
+				        { 
+				            return d;
+				            // console.log(filteredData1);
+				        } 
+				    })
+				    var totalMean1 = [d3.mean(filteredData1.map(function(d){ return d.Price})),
+			       d3.mean(filteredData1.map(function(d){ return d.Features})),
+			       d3.mean(filteredData1.map(function(d){ return d.Safety})),
+			       d3.mean(filteredData1.map(function(d){ return d.Security})),
+			       d3.mean(filteredData1.map(function(d){ return d.Privacy})),
+			       d3.mean(filteredData1.map(function(d){ return d.Reliability})),
+			       d3.mean(filteredData1.map(function(d){ return d.UserReviews})),
+			       d3.mean(filteredData1.map(function(d){ return d.ExpertRecommendation})),
+			       d3.mean(filteredData1.map(function(d){ return d.FriendorFamilyRecommendation})),
+			       d3.mean(filteredData1.map(function(d){ return d.Convenience}))	       ];
+			    //    test(totalMean1);
+
+
+				// var filteredData2 = data.filter(function(d) { 
+				//         if( d["Language"] == "French")
+				//         { 
+				//             return d;
+				//             console.log(filteredData2);
+				//         } 
+				//     })
+				//     var totalMean2 = [d3.mean(filteredData2.map(function(d){ return d.Price})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.Features})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.Safety})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.Security})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.Privacy})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.Reliability})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.UserReviews})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.ExpertRecommendation})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.FriendorFamilyRecommendation})),
+			    //    d3.mean(filteredData2.map(function(d){ return d.Convenience}))	       ];
+			    //    test(totalMean1);
+
+
+			    //    	var filteredData3 = data.filter(function(d) { 
+				//         if( d["Language"] == "German")
+				//         { 
+				//             return d;
+				//             console.log(filteredData4);
+				//         } 
+				//     })
+				//     var totalMean3 = [d3.mean(filteredData3.map(function(d){ return d.Price})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.Features})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.Safety})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.Security})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.Privacy})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.Reliability})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.UserReviews})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.ExpertRecommendation})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.FriendorFamilyRecommendation})),
+			    //    d3.mean(filteredData3.map(function(d){ return d.Convenience}))	       ];
+			    //    test(totalMean3);
+
+			    //    	var filteredData4 = data.filter(function(d) { 
+				//         if( d["Language"] == "German")
+				//         { 
+				//             return d;
+				//             console.log(filteredData4);
+				//         } 
+				//     })
+				//     var totalMean4 = [d3.mean(filteredData4.map(function(d){ return d.Price})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.Features})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.Safety})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.Security})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.Privacy})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.Reliability})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.UserReviews})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.ExpertRecommendation})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.FriendorFamilyRecommendation})),
+			    //    d3.mean(filteredData4.map(function(d){ return d.Convenience}))	       ];
+			    //    test(totalMean4);
+
+
+			    //    	var filteredData5 = data.filter(function(d) { 
+				//         if( d["Language"] == "pt-br")
+				//         { 
+				//             return d;
+				//             console.log(filteredData5);
+				//         } 
+				//     })
+				//     var totalMean5 = [d3.mean(filteredData5.map(function(d){ return d.Price})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.Features})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.Safety})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.Security})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.Privacy})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.Reliability})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.UserReviews})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.ExpertRecommendation})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.FriendorFamilyRecommendation})),
+			    //    d3.mean(filteredData5.map(function(d){ return d.Convenience}))	       ];
+			    //    test(totalMean5);
+
+
+			    //    	var filteredData6 = data.filter(function(d) { 
+				//         if( d["Language"] == "French")
+				//         { 
+				//             return d;
+				//             console.log(filteredData6);
+				//         } 
+				//     })
+				//     var totalMean6 = [d3.mean(filteredData6.map(function(d){ return d.Price})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.Features})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.Safety})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.Security})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.Privacy})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.Reliability})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.UserReviews})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.ExpertRecommendation})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.FriendorFamilyRecommendation})),
+			    //    d3.mean(filteredData6.map(function(d){ return d.Convenience}))	       ];
+			    //    test(totalMean6);
+
+
+
+				});
+				
+
+
+			function test(totalMean, one_country_Mean, class_id) {
+				var margin = {top: 300, right: 100, bottom: 100, left: 100},
+				width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
+				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
+						
+				////////////////////////////////////////////////////////////// 
+				////////////////////////// Data ////////////////////////////// 
+				////////////////////////////////////////////////////////////// 
+
+				var data_template = [
+					{axis:"Price",value:0},
+					{axis:"Features",value:0},
+					{axis:"Safety",value:0},
+					{axis:"Security",value:0},
+					{axis:"Privacy",value:0},
+					{axis:"Reliability",value:0},
+					{axis:"UserReviews",value:0},
+					{axis:"ExpertRecommendation",value:0},
+					{axis:"FriendorFamilyRecommendation",value:0},
+					{axis:"Convenience",value:0}
+				];
+				
+				var data = [];
+
+				for(var i = 0; i < 2; i++) {
+					var cur_data = JSON.parse(JSON.stringify(data_template));
+					data.push(cur_data);
+				}
+
+				for(var i = 0; i < data[0].length; i++) {
+					data[0][i].value = one_country_Mean[i];
+				}
+
+				for(var i = 0; i < data[1].length; i++) {
+					data[1][i].value = totalMean[i];
+				}
+
+				// for(var j = 0; j < data[1].length; j++) {
+				// 	data[0][j].value = totalMean2[j];
+				// }
+				// console.log(totalMean);
+
+				////////////////////////////////////////////////////////////// 
+				//////////////////// Draw the Chart ////////////////////////// 
+				////////////////////////////////////////////////////////////// 
+
+				var color = d3.scale.ordinal()
+					.range(["#EDC951","#CC333F","#00A0B0","#FFC0CB", "#800080", "A52A2A" ]);
+					
+				var radarChartOptions = {
+					 w: width *2/3,
+					  h: height *2/3,
+					  margin: margin,
+					  maxValue: 0.5,
+					  levels: 5,
+					  roundStrokes: true,
+					  color: color
+				};
+
+				//Call function to draw the Radar chart
+				RadarChart("." + class_id, data, radarChartOptions);
+				
+			}
+
+			function test2(totalMean_language, class_id) {
+				var margin = {top: 300, right: 100, bottom: 100, left: 100},
+				width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
+				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
+						
+				////////////////////////////////////////////////////////////// 
+				////////////////////////// Data ////////////////////////////// 
+				////////////////////////////////////////////////////////////// 
+
+				var data_template = [
+					{axis:"Price",value:0},
+					{axis:"Features",value:0},
+					{axis:"Safety",value:0},
+					{axis:"Security",value:0},
+					{axis:"Privacy",value:0},
+					{axis:"Reliability",value:0},
+					{axis:"UserReviews",value:0},
+					{axis:"ExpertRecommendation",value:0},
+					{axis:"FriendorFamilyRecommendation",value:0},
+					{axis:"Convenience",value:0}
+				];
+
+				var data = [];
+
+				for(var i = 0; i < totalMean_language.length; i++) {
+					// data[0][i].value = totalMean[i];
+					var cur_totalMean = totalMean_language[i];
+					if(cur_totalMean.length == 0) {
+						continue;
+					}
+
+					var cur_data = JSON.parse(JSON.stringify(data_template));
+					for(var j = 0; j < data_template.length; j++) {
+						cur_data[j].value = cur_totalMean[j];
+					}
+					data.push(cur_data);
+				}
+				
+
+
+				////////////////////////////////////////////////////////////// 
+				//////////////////// Draw the Chart ////////////////////////// 
+				////////////////////////////////////////////////////////////// 
+
+				var color = d3.scale.ordinal()
+					.range(["#EDC951","#CC333F","#00A0B0","#FFC0CB", "#800080", "A52A2A" ]);
+					
+				var radarChartOptions = {
+					 w: width *2/3,
+					  h: height *2/3,
+					  margin: margin,
+					  maxValue: 0.,
+					  levels: 5,
+					  roundStrokes: true,
+					  color: color
+				};
+				
+
+				//Call function to draw the Radar chart
+				RadarChart("." + class_id, data, radarChartOptions);
+				
+			}
+		</script>
+	</body>
+</html>
