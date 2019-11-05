@@ -1,3 +1,4 @@
+<!-- source code: https://www.visualcinnamon.com/2015/10/different-look-d3-radar-chart.html -->
 <!DOCTYPE html>
 <html>
 	<head>
@@ -22,11 +23,6 @@
 				text-align: center;
 				text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
 				cursor: default;
-			}
-			
-			.legend {
-				font-family: 'Raleway', sans-serif;
-				fill: #333333;
 			}
 			
 			.tooltip {
@@ -69,8 +65,6 @@
 		</div>
 
 		
-
-		<!-- <script src="radarChart.js"></script> -->
 		<script src="one_example.js"></script>	
 		<script>
 			d3.csv("10000data.csv", function(data){
@@ -162,37 +156,37 @@
 				}
 
 
-			    var totalMean = [d3.mean(data.map(function(d){ return d.Price})),
-			       d3.mean(data.map(function(d){ return d.Features})),
-			       d3.mean(data.map(function(d){ return d.Safety})),
-			       d3.mean(data.map(function(d){ return d.Security})),
-			       d3.mean(data.map(function(d){ return d.Privacy})),
-			       d3.mean(data.map(function(d){ return d.Reliability})),
-			       d3.mean(data.map(function(d){ return d.UserReviews})),
-			       d3.mean(data.map(function(d){ return d.ExpertRecommendation})),
-			       d3.mean(data.map(function(d){ return d.FriendorFamilyRecommendation})),
-			       d3.mean(data.map(function(d){ return d.Convenience}))
-			       ];
-			    //    test(totalMean);
+			    // var totalMean = [d3.mean(data.map(function(d){ return d.Price})),
+			    //    d3.mean(data.map(function(d){ return d.Features})),
+			    //    d3.mean(data.map(function(d){ return d.Safety})),
+			    //    d3.mean(data.map(function(d){ return d.Security})),
+			    //    d3.mean(data.map(function(d){ return d.Privacy})),
+			    //    d3.mean(data.map(function(d){ return d.Reliability})),
+			    //    d3.mean(data.map(function(d){ return d.UserReviews})),
+			    //    d3.mean(data.map(function(d){ return d.ExpertRecommendation})),
+			    //    d3.mean(data.map(function(d){ return d.FriendorFamilyRecommendation})),
+			    //    d3.mean(data.map(function(d){ return d.Convenience}))
+			    //    ];
+			    // //    test(totalMean);
 
 
-				var filteredData1 = data.filter(function(d) { 
-				        if( d["Language"] == "English")
-				        { 
-				            return d;
-				            // console.log(filteredData1);
-				        } 
-				    })
-				    var totalMean1 = [d3.mean(filteredData1.map(function(d){ return d.Price})),
-			       d3.mean(filteredData1.map(function(d){ return d.Features})),
-			       d3.mean(filteredData1.map(function(d){ return d.Safety})),
-			       d3.mean(filteredData1.map(function(d){ return d.Security})),
-			       d3.mean(filteredData1.map(function(d){ return d.Privacy})),
-			       d3.mean(filteredData1.map(function(d){ return d.Reliability})),
-			       d3.mean(filteredData1.map(function(d){ return d.UserReviews})),
-			       d3.mean(filteredData1.map(function(d){ return d.ExpertRecommendation})),
-			       d3.mean(filteredData1.map(function(d){ return d.FriendorFamilyRecommendation})),
-			       d3.mean(filteredData1.map(function(d){ return d.Convenience}))	       ];
+				// var filteredData1 = data.filter(function(d) { 
+				//         if( d["Language"] == "English")
+				//         { 
+				//             return d;
+				//             // console.log(filteredData1);
+				//         } 
+				//     })
+				    // var totalMean1 = [d3.mean(filteredData1.map(function(d){ return d.Price})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.Features})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.Safety})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.Security})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.Privacy})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.Reliability})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.UserReviews})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.ExpertRecommendation})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.FriendorFamilyRecommendation})),
+			     //   d3.mean(filteredData1.map(function(d){ return d.Convenience}))	       ];
 
 
 
@@ -206,9 +200,6 @@
 				width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
 				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
 						
-				////////////////////////////////////////////////////////////// 
-				////////////////////////// Data ////////////////////////////// 
-				////////////////////////////////////////////////////////////// 
 
 				var data_template = [
 					{axis:"Price",value:0},
@@ -271,10 +262,6 @@
 				// legendPosition = {x: 25, y: 25},
 				width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
 				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
-						
-				////////////////////////////////////////////////////////////// 
-				////////////////////////// Data ////////////////////////////// 
-				////////////////////////////////////////////////////////////// 
 
 				var data_template = [
 					{axis:"Price",value:0},
