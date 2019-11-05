@@ -1,0 +1,752 @@
+<!--
+For the map: http://bl.ocks.org/micahstubbs/8e15870eb432a21f0bc4d3d527b2d14f
+For adding border to svg container: http://bl.ocks.org/AndrewStaroscik/5222370
+For interaction between map and charts: Source: http://bl.ocks.org/hopelessoptimism/5d558563599aea1bfab93089a4036c22
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+
+    .h2left {
+      background-color: lightpink;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+
+    .h2right{
+      background-color: lightblue;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Create two unequal columns that floats next to each other */
+    .column {
+      float: left;
+      /*padding: 10px;*/
+      height: 750px; /* Should be removed. Only for demonstration */
+    }
+
+    .left {
+      width: 50%;
+    }
+
+    .right {
+      width: 50%;
+    }
+
+    .lefttop {
+      height: 50%;
+    }
+
+    .leftbottom {
+      height: 50%;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    svg {
+      width:100%;
+      height:100%;
+      float: right;
+    }
+
+    /*
+    Bar tooltips
+    */
+    .bartooltip {
+      position: absolute;
+      text-align: center;
+      width: 60px;
+      height: 28px;
+      padding: 2px;
+      font: 12px sans-serif;
+      background: lightsteelblue;
+      border: 0px;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+
+  /*
+  Tooltips
+  */
+  .names {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+  }
+
+    /* Tooltip CSS */
+    .d3-tip {
+    line-height: 1.5;
+    font-weight: 400;
+    font-family:"avenir next", Arial, sans-serif;
+    padding: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #FFA500;
+    border-radius: 1px;
+    pointer-events: none;
+    text-align:center;
+    }
+
+    text{
+      /*The pointer-events property defines whether or not
+        an element reacts to pointer events, like hover and click*/
+      pointer-events:none;
+    }
+
+    .details{
+      color:white;
+    }
+
+    .detailsCountryName{
+      color:white;
+      font-size:24px;
+      font-weight: bolder;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="column left">
+    <h2 class="h2left">Survey Analysis</h2>
+
+    <div class="lefttop">
+    <svg id="chart">
+      <text x="50%" y="50" id="chartheading" font-size="1.5em" text-anchor="middle" font-family="futura">I consider myself:</text>
+      <rect width="100%" height="100%" stroke="black" stroke-width="3" fill="pink" opacity="0.2"/>
+    </svg>
+    </div>
+
+    <div class="leftbottom">
+    <svg id="barchart">
+      <text x="50%" y="50" id="chartheading" font-size="1.5em" text-anchor="middle" font-family="futura">Languages Participants Used</text>
+      <rect width="100%" height="100%" stroke="black" stroke-width="3" fill="yellow" opacity="0.2"/>
+    </svg>
+    </div>
+  </div>
+
+  <div class="column right">
+    <h2 class="h2right">Participating Countries</h2>
+      <svg id="map" >
+<!--      <text x="50%" y="50" id="mapheading" font-size="1.5em" text-anchor="middle" font-family="futura">World Map</text>-->
+      <rect width="100%" height="100%" stroke="black" stroke-width="3" fill="#09F" opacity="0.2"/>
+    </svg>
+  </div>
+
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/queue.v1.min.js"></script>
+  <script src="https://d3js.org/topojson.v1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+  <!-- Color scale -->
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+  <script>
+
+    // Set tooltips for map
+    var tip = d3.tip() //https://github.com/caged/d3-tip/blob/master/docs/index.md
+            .attr('class', 'd3-tip')
+            .direction('n')
+            // .offset([0, 0]) //https://github.com/caged/d3-tip/blob/master/docs/positioning-tooltips.md
+            .html(function(d) {
+              return "<span class='detailsCountryName'>" + d.properties.name + "<br></span>"
+                     + "<strong>Total participant counts</strong><br>"
+                     + "<span class='details'> > by IP address: " + format(d.participantnum) +"<br></span>"
+                     + "<span class='details'> > by Self-Identify: " + format(d.participantnumSelf) +"</span>";
+            });
+
+    /*
+    D3.js setup code
+    */
+    var margin = {top: 10, right: 0, bottom: 0, left: 10};
+    var width = 600 - margin.left - margin.right;
+    var height = 500 - margin.top - margin.bottom;
+
+    var color = d3.scaleThreshold()
+                  .domain([1,10,50,100,500,1000,5000,10000,20000])
+                  .range(["rgb(223, 255, 0)", "rgb(191, 255, 0)", "rgb(167, 252, 0)", "rgb(209, 226, 49)", "rgb(164, 198, 57)", "rgb(172,225,175)","rgb(133,187,101)","rgb(3,129,60)","rgb(19,136,8)","rgb(0,128,0)"]);
+
+
+    var format = d3.format(","); //https://github.com/d3/d3-format
+
+    // Source: https://github.com/d3/d3-geo
+    var projection = d3.geoMercator()
+                   .scale(100) // adjust the size of the map
+                  .translate( [width / 1.9, height/1.1]); //adjust the location of the map on the canvas
+
+    var path = d3.geoPath().projection(projection);
+
+    ////////////////////////////////////////////////
+
+    // load data with queue
+    var countryloc = "world_countries.json";
+    var surveryinfo = "20171013111831-SurveyExport.csv";
+
+    var q = queue()
+            .defer(d3.json, countryloc)
+            .defer(d3.csv, surveryinfo)
+            .awaitAll(draw);
+
+    function draw(error, data) {
+
+    // important: First argument it expects is error
+    if (error) throw error;
+    // console.log(data);
+
+    var mapData = data[0];
+    var surveyData = data[1];
+    console.log(mapData);
+    console.log(surveyData);
+
+    surveyData.forEach(function (d) {
+      if (d.Country === ""){
+         d.Country = "NA";
+      }
+        // console.log(d);
+    });
+
+    surveyData.forEach(function (d) {
+      if (d["I consider myself:"].includes("Average User")) {
+        d["I consider myself:"] = "Average User";
+      } else if (d["I consider myself:"].includes("Technically Savvy")) {
+        d["I consider myself:"] = "Technically Savvy";
+      } else if (d["I consider myself:"].includes("Ultra Nerd")) {
+         d["I consider myself:"] = "Ultra Nerd";
+      } else if (d["I consider myself:"].includes("Luddite")) {
+         d["I consider myself:"] = "Luddite";
+      } else {
+         d["I consider myself:"] = "NaN";
+      }
+        // console.log(d);
+    });
+
+    surveyData.forEach(function (d) {
+      if (d["Country or Region (optional)"] === "") {
+         d["Country or Region (optional)"] = "NA";
+      }
+        // console.log(d);
+    });
+
+
+    /*
+    Map starts
+    - count categorical variables
+      Source: http://www.shanegibney.com/shanegibney/d3-js-v4-count-values-in-an-object/
+    */
+    var countryCount = d3.nest()
+        .key(function (d) {
+            return d.Country;
+        })
+        .rollup(function (leaves) {
+            return leaves.length;
+        })
+        .entries(surveyData);
+
+
+    var countryCountDict = {};
+    countryCount.forEach(function (d) {
+        countryCountDict[d.key] = +d.value;
+    });
+    // console.log(countryCountDict);
+
+    mapData.features.forEach(function (d) {
+        d.participantnum = countryCountDict[d.properties.name];
+        // console.log(d);
+    });
+
+
+    ///////// country/region reported by the participants themselves ///////////
+
+    var countryCountSelf = d3.nest()
+        .key(function (d) {
+            return d["Country or Region (optional)"];
+        })
+        .rollup(function (leaves) {
+            return leaves.length;
+        })
+        .entries(surveyData);
+
+    var countryCountSelfDict = {};
+    countryCountSelf.forEach(function (d) {
+        countryCountSelfDict[d.key] = +d.value;
+    });
+    // console.log(countryCountDict);
+
+    mapData.features.forEach(function (d) {
+        d.participantnumSelf = countryCountSelfDict[d.properties.name];
+        // console.log(d);
+    });
+
+    // create and append the map of SF neighborhoods
+    var map = d3.select('#map')
+                 .selectAll('path')
+                 .data(mapData.features)
+                 .enter()
+                 .append('path')
+                 .attr('d', path)
+                 .attr('width', width)
+                 .attr('height', height)
+                 // add the neighborhood name as its class
+                 .attr('class', function(d) {
+                    return d.properties.name;
+                 })
+
+                 .style("fill", function(d) {
+                   if (typeof d.participantnum !== 'undefined') {
+                      return color(d.participantnum);
+                   } else {
+                       return "gray"
+                     }})
+                 .style('stroke', 'white')
+                 .style('stroke-width', 1.5)
+                 .style("opacity",0.8)
+        .on('mouseover',function(d){
+          d3.select(this)
+            .style("fill", "pink")
+            .style("stroke","white")
+            .style("stroke-width",3);
+          tip.show(d);
+          var cname = d.properties.name;
+          drawChart(cname);
+          drawBarChart(cname);
+        })
+        .on('mouseout', function(d){
+          tip.hide(d);
+          // var cname = d.properties.name;
+          d3.select(this)
+          // d3.select("path." + cname)
+            .style("opacity", 0.8)
+            .style("fill", function(d) {
+                   if (typeof d.participantnum !== 'undefined') {
+                      return color(d.participantnum);
+                   } else {
+                       return "gray"
+                     }})
+            .style("stroke","white")
+            .style("stroke-width",0.3);
+        });
+
+    map.call(tip);
+
+    // add legend
+    var legend = d3.select('#map').selectAll(".legend")
+                        .data(color.domain())
+                        .enter().append("g")
+                        .attr("class", "legend")
+                        .attr("transform", function(d, i){
+                          return "translate(0," + (i * 20) + ")"
+                        });
+        legend.append("rect")
+              .attr("x", width+15)
+                .attr("y", 20)
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", color);
+
+        legend.append("text")
+              .attr("x", width+5)
+              .attr("y", 30)
+              .attr("dy", ".35em")
+              .style("text-anchor", "end")
+              .text(function(d){return d;});
+
+        d3.select("#map").append('text')
+                .attr("x", width)
+                .attr("y", 15)
+                      .attr("dy", "0em")
+                      .style("font-size", "1em")
+                      .style("text-anchor", "middle")
+                      .text("Threshold");
+
+
+    /*
+     Map ends
+    */
+
+    /*
+    Pie Chart for "I consider myself:" begins
+    */
+
+      // set the dimensions and margins of the graph
+
+      var marginLanguage = {top: 10, right: 0, bottom: 0, left: 10};
+      var widthLanguage = 500 - marginLanguage.left - marginLanguage.right;
+      var heightLanguage = 85 - marginLanguage.top - marginLanguage.bottom;
+      var radius = 130;
+
+      var langAll = d3.nest()
+                    .key(function (d) {
+                        return d["I consider myself:"];
+                    })
+                    .rollup(function (leaves) {
+                        return leaves.length;
+                    })
+                    .entries(surveyData);
+
+
+      var langAllDict = {};
+      var langList = [];
+      langAll.forEach(function (d) {
+          langAllDict[d.key] = +d.value;
+          langList.push(d.key);
+      });
+
+      // console.log(langAllDict);
+
+      var colorPie = d3.scaleOrdinal()
+                        .domain(langList)
+                        .range(d3.schemeDark2);
+
+      var field = "";
+      // create a function to draw the timeseries for each neighborhood
+        var drawChart = function(field) {
+          d3.select('#chart').select('#piechart1').remove();
+          d3.select("#chart").select("#innerFill").remove();
+          d3.select("#chart").select('#anno1').remove();
+          d3.select("#chart").select('#anno2').remove();
+          // // d3.select("#chart").select('#cnameAnno1').remove();
+          d3.select("#chart").select('#cnameAnno2').remove();
+
+          // take out data for one country and remove missing values
+          if (field === ""){
+            var lang = langAll;
+
+            var langDict = langAllDict;
+
+          // console.log(countryCountDict);
+          } else {
+              var country_data = surveyData.filter(function(d) {
+              if (d.Country === field){
+                return d["I consider myself:"];
+                }
+              });
+
+              // console.log(country_data);
+
+              var lang = d3.nest()
+                .key(function (d) {
+                return d["I consider myself:"];
+                })
+                .rollup(function (leaves) {
+                    return leaves.length;
+                })
+                .entries(country_data);
+
+              var langDict = {};
+              lang.forEach(function (d) {
+                  langDict[d.key] = +d.value;
+              });
+          }
+
+          // Compute the position of each group on the pie:
+          var pie = d3.pie()
+            .value(function(d) {return d.value; })
+            .sort(function(a, b) { console.log(a) ; return d3.ascending(a.key, b.key);} ); // This make sure that group order remains the same in the pie chart
+
+          if (field in countryCountDict || field === "") {
+            var data_ready = pie(d3.entries(langDict));
+
+            // append the pie object to the svg called 'chart'
+            var chart = d3.select("#chart")
+                    .append("g")
+                    .attr("id", "piechart1")
+                    .attr("transform", "translate(" + widthLanguage / 1.5 + "," + heightLanguage / 0.33 + ")")
+                    .selectAll('path')
+                    .data(data_ready);
+
+            chart.enter()
+                      .append('path')
+                      .merge(chart)
+                      .transition()
+                      .duration(1000)
+                      .attr('d', d3.arc()
+                        .innerRadius(80)
+                        .outerRadius(radius)
+                      )
+                      .attr('fill', function(d){ return(colorPie(d.data.key)) })
+                      .attr("stroke", "white")
+                      .style("stroke-width", "2px")
+                      .style("opacity", 1);
+
+            chart.exit().remove();
+          }
+          else {
+            var chart = d3.select("#chart")
+                    .append("g")
+                    .attr("id", "innerFill")
+                    .attr("transform", "translate(" + widthLanguage / 1.5 + "," + heightLanguage / 0.33 + ")")
+                    .append("circle")
+                      .attr("r", radius)
+                      .attr("fill", "gray")
+                      .attr("stroke", "black")
+                      .style("stroke-width", "2px")
+                      .style("opacity", 0.7);
+
+                    d3.select("#chart").append('text')
+                            .attr("id", "anno1")
+                      .attr("transform", "translate(" + widthLanguage / 1.5 + "," + heightLanguage / 0.33 + ")")
+                      .attr('stroke', 'black')
+                            .attr("dy", "0em")
+                      .style("font-size", radius*0.15)
+                      .style("text-anchor", "middle")
+                      .text("NO PARTICIPANTES");
+          }
+
+          if (field === ""){
+            var fieldtitle = "All Countries";
+          } else {
+            var fieldtitle = field;
+          }
+          d3.select("#chart").append('text')
+                            .attr("id", "cnameAnno2")
+                      .attr("transform", "translate(" + (widthLanguage / 1.5) + "," + (heightLanguage / 1.5) + ")")
+                      .attr('stroke', 'black')
+                      .attr("dy", "1.3em")
+                      .style("font-size", radius*0.22)
+                      .style("text-anchor", "middle")
+                      .text("in " + fieldtitle);
+        };
+
+
+        drawChart(field);
+
+     // add legend
+    var legendpie = d3.select('#chart').selectAll(".legend")
+                        .data(colorPie.domain())
+                        .enter().append("g")
+                        .attr("class", "legend")
+                        .attr("transform", function(d, i){
+                          return "translate(0," + (i * 20) + ")"
+                        });
+        legendpie.append("rect")
+              .attr("x", width+15)
+                .attr("y", 20)
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", colorPie);
+
+        legendpie.append("text")
+              .attr("x", width+5)
+              .attr("y", 30)
+              .attr("dy", ".35em")
+              .style("text-anchor", "end")
+              .text(function(d){console.log(d); return d;});
+    /*
+    Pie Chart for "I consider myself:" ends
+    */
+
+
+
+
+    /*
+     Bar Chart for languages begin
+     Source: https://bl.ocks.org/curran/fea34ca9b3b8886e3ab8
+     */
+
+      var margin = {top: 10, right: 0, bottom: 0, left: 10};
+      var outerWidth = 450 - margin.left - margin.right;
+      var outerHeight = 250 - margin.top - margin.bottom;
+      var barPadding = 0.2;
+
+      var xColumn = "Language";
+      var yColumn = "Participant Counts";
+      var colorColumn = "Language";
+
+      var innerWidth  = outerWidth  - margin.left - margin.right;
+      var innerHeight = outerHeight - margin.top  - margin.bottom;
+
+      var field = "";
+      // create a function to draw the timeseries for each neighborhood
+      var drawBarChart = function(field) {
+        d3.select('#barchart').select('#barchart1').remove();
+
+      var barchart = d3.select("#barchart")
+          .append("g")
+          .attr("id", "barchart1")
+          .attr("transform", "translate(" + (outerWidth/4) + "," + (outerHeight/2.5) + ")");
+
+      var xAxisG = barchart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + innerHeight + ")");
+
+      var yAxisG = barchart.append("g")
+        .attr("class", "y axis");
+
+      var languagelist = ["English", "French", "German", "Italian", "pt-br", "Spanish"];
+      var xScale = d3.scaleBand().range([0, innerWidth]).padding(barPadding);
+      var yScale = d3.scaleLinear().range([innerHeight, 0]);
+      var colorScale = d3.scaleOrdinal()
+              .domain(languagelist)
+              .range(["blue", "red", "green", "yellow", "purple", "orange"]);
+
+      // take out data for one country and remove missing values
+      if (field === "") {
+        var lang = d3.nest()
+                .key(function (d) {
+                  return d["Language"];
+                })
+                .rollup(function (leaves) {
+                  return leaves.length;
+                })
+                .entries(surveyData);
+      } else {
+        var country_data = surveyData.filter(function (d) {
+          if (d.Country === field) {
+            return d["Language"];
+          }
+        });
+
+        var lang = d3.nest()
+                .key(function (d) {
+                  return d["Language"];
+                })
+                .rollup(function (leaves) {
+                  return leaves.length;
+                })
+                .entries(country_data);
+      }
+
+      if (field in countryCountDict || field === "") {
+        // scale the range of the data in the domains
+        xScale.domain(lang.map(function (d) {
+          return d.key;
+        }));
+
+        yScale.domain([0, d3.max(lang, function (d) {
+          return d.value;
+        })]);
+
+
+        var bartip = d3.tip() //https://github.com/caged/d3-tip/blob/master/docs/index.md
+            // .attr('class', 'bartooltip')
+            .direction('n')
+            // .offset([0, 0]) //https://github.com/caged/d3-tip/blob/master/docs/positioning-tooltips.md
+            .html(function(d) {
+              return d.value;
+            });
+
+        // append rectangles for the bar chart
+        barchart.selectAll(".bar")
+                .data(lang)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function (d) {
+                  return xScale(d.key)
+                })
+                .attr("width", xScale.bandwidth())
+                .attr("y", function (d) {
+                  return yScale(d.value);
+                })
+                .attr("height", function (d) {
+                  return innerHeight - yScale(d.value);
+                })
+                .style("fill", function (d) {
+                  return colorScale(d.key);
+                })
+        .on('mouseover',function(d){
+          bartip.show(d);
+          d3.select(this)
+            .style("fill", "pink")
+            .style("stroke","black")
+            .style("stroke-width",3);
+        })
+        .on('mouseout', function(d){
+          bartip.hide(d);
+          d3.select(this)
+            .style("stroke", "None")
+            .style("fill", function (d) {
+              return colorScale(d.key);
+            });
+        });
+
+        barchart.call(bartip);
+
+        // add x Axis
+        barchart.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + innerHeight + ")")
+                .call(d3.axisBottom(xScale))
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.4em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-40)");
+
+        // add y Axis
+        barchart.append("g")
+                .attr("class", "axis")
+                .call(d3.axisLeft(yScale));
+
+        // text label for the y axis
+        barchart.append("text")
+        .attr("transform", "rotate(-90)")
+        // .attr("y", 0 - (innerWidth/3))
+        // .attr("x", 0 - (innerHeight/3))
+        .attr("y", 0 - (innerWidth / 5.5))
+        .attr("x",0 - (innerHeight / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Participant Counts");
+      } else {
+        barchart.append("g")
+                .append("rect")
+                  .attr("width", innerWidth)
+                  .attr("height", innerHeight)
+                  .attr("fill", "gray")
+                  .attr("stroke", "black")
+                  .style("stroke-width", "2px")
+                  .style("opacity", 0.7);
+
+        barchart.append('text')
+              .attr("transform", "translate(" + (innerWidth/2) + "," + (innerHeight/2) + ")")
+              .attr('stroke', 'black')
+                    .attr("dy", "0em")
+              .style("font-size", "1.5em")
+              .style("text-anchor", "middle")
+              .text("NO PARTICIPANTES");
+      }
+
+
+      if (field === "") {
+        var fieldtitle = "All Countries";
+      } else {
+        var fieldtitle = field;
+      }
+
+      // add title
+      barchart.append('text')
+              .attr("transform",
+                      "translate(" + (innerWidth / 2) + " ," +
+                      (innerHeight - 280) + ")")
+              .attr('stroke', 'black')
+              .attr("dy", "1.5em")
+              .style("font-size", "1.5em")
+              .style("text-anchor", "middle")
+              .text("in " + fieldtitle);
+    };
+    drawBarChart(field);
+    /*
+     Bar Chart for languages ends.
+     */
+    }
+
+
+
+  </script>
+</body>
+</html>
