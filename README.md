@@ -55,4 +55,4 @@ This is the ReadMe file for project 1 of Group 5. The group members include Ling
 	  
 ## References
 
-Sources that we referred to for this project are cited in the script at relevant position, noted with the format *Source: website-address*
+Sources that we referred to for this project are cited in the script at relevant position, noted as comments with the format *Source: website-address*.
