@@ -70,6 +70,12 @@ function RadarChart(id, data, options) {
 			.attr("width",  cfg.w + cfg.margin.left + cfg.margin.right)
 			.attr("height", cfg.h + cfg.margin.top + cfg.margin.bottom)
 			.attr("class", "radar"+id);
+
+	// svg.append("circle").attr("cx",200).attr("cy",130).attr("r", 6).style("fill", "#EDC951")
+	// svg.append("circle").attr("cx",200).attr("cy",160).attr("r", 6).style("fill", "#CC333F")
+	// svg.append("text").attr("x", 220).attr("y", 130).text("Selected Country").style("font-size", "15px").attr("alignment-baseline","middle")
+	// svg.append("text").attr("x", 220).attr("y", 160).text("Whole world avg").style("font-size", "15px").attr("alignment-baseline","middle")
+
 	//Append a g element		
 	var g = svg.append("g")
 			.attr("transform", "translate(" + (cfg.w/2 + cfg.margin.left) + "," + (cfg.h/2 + cfg.margin.top) + ")");
@@ -94,7 +100,7 @@ function RadarChart(id, data, options) {
 	
 	//Draw the background circles
 	axisGrid.selectAll(".levels")
-	   .data(d3.range(1,(cfg.levels + 3)).reverse())
+	   .data(d3.range(1,(cfg.levels + 2)).reverse())
 	   .enter()
 		.append("circle")
 		.attr("class", "gridCircle")
@@ -106,7 +112,7 @@ function RadarChart(id, data, options) {
 
 	//Text indicating at what % each level is
 	axisGrid.selectAll(".axisLabel")
-	   .data(d3.range(1,(cfg.levels + 3)).reverse())
+	   .data(d3.range(1,(cfg.levels + 2)).reverse())
 	   .enter().append("text")
 	   .attr("class", "axisLabel")
 	   .attr("x", 4)

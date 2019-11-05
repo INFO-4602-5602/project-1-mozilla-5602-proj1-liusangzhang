@@ -11,6 +11,7 @@
 
 		<!-- D3.js -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.3.0/d3-legend.js" charset="utf-8"></script>
 		
 		<style>
 			body {
@@ -35,10 +36,38 @@
 	
 	</head>
 	<body>
-		<div class="col-sm-6 radarChart">
-			<label></label>
+		<div>
+			<h2 style = "font-family: Raleway;">The importance of different factors when doing a purchase of a new tech toy</h2>
 		</div>
-		<div class="col-sm-6 radarChart2"></div>
+		<div class ="col-sm-6">
+			<div class="radarChart"></div>
+			<div>
+				<label style="color:#CC333F;">World Average</label>
+				</br>	
+				<label style="color:#EDC951;">Select Country</label>
+			</div>
+
+		</div>
+
+		<div class ="col-sm-6">
+
+			<div class="radarChart2"></div>
+			<div class="row">
+				<div class ="form-inline">
+				<label style="color:#EDC951;">English</label>
+				<label style="color:#CC333F;">German</label>
+				<label style="color:#00A0B0;">French</label>
+				</div>
+				<div class ="form-inline">
+				<label style="color:#FFC0CB;">Spanish</label>
+				<label style="color:#800080;">Italian</label>
+				<label style="color:#A52A2A;">pt-br</label>
+				</div>
+				
+			</div>
+
+		</div>
+
 		
 
 		<!-- <script src="radarChart.js"></script> -->
@@ -131,42 +160,7 @@
 				   
 				   return totalMean;
 				}
-				// var select = d3.select("#country_select")
-				// 			.append("select")
-				// 			.on('change', searchNode);
 
-				// select.selectAll("option")
-				// 	.data(graph.nodes)
-				// 	.enter()
-				// 	.append("option")
-				// 	.attr("value", function(d) {return d.name;})
-				// 	.text(function(d) {
-				// 		return d.name; 
-				// 	});
-
-				// function searchNode() {
-
-				// 	//find the node
-				// 	var selectedVal = this.options[this.selectedIndex].value
-
-				// 	var node = svg.selectAll(".node");
-
-				// 	if (selectedVal == "none") {
-				// 	node.style("stroke", "white").style("stroke-width", "1");
-				// 	} else {
-				// 	var selected = node.filter(function(d, i) {
-				// 		return d.name != selectedVal;
-				// 	});
-				// 	selected.style("opacity", "0");
-				// 	var link = svg.selectAll(".link")
-				// 	link.style("opacity", "0");
-				// 	d3.selectAll(".node, .link").transition()
-				// 		.duration(2000)
-				// 		.style("opacity", 1);
-
-
-				// 	}
-				// }
 
 			    var totalMean = [d3.mean(data.map(function(d){ return d.Price})),
 			       d3.mean(data.map(function(d){ return d.Features})),
@@ -199,106 +193,6 @@
 			       d3.mean(filteredData1.map(function(d){ return d.ExpertRecommendation})),
 			       d3.mean(filteredData1.map(function(d){ return d.FriendorFamilyRecommendation})),
 			       d3.mean(filteredData1.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean1);
-
-
-				// var filteredData2 = data.filter(function(d) { 
-				//         if( d["Language"] == "French")
-				//         { 
-				//             return d;
-				//             console.log(filteredData2);
-				//         } 
-				//     })
-				//     var totalMean2 = [d3.mean(filteredData2.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData2.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean1);
-
-
-			    //    	var filteredData3 = data.filter(function(d) { 
-				//         if( d["Language"] == "German")
-				//         { 
-				//             return d;
-				//             console.log(filteredData4);
-				//         } 
-				//     })
-				//     var totalMean3 = [d3.mean(filteredData3.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData3.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean3);
-
-			    //    	var filteredData4 = data.filter(function(d) { 
-				//         if( d["Language"] == "German")
-				//         { 
-				//             return d;
-				//             console.log(filteredData4);
-				//         } 
-				//     })
-				//     var totalMean4 = [d3.mean(filteredData4.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData4.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean4);
-
-
-			    //    	var filteredData5 = data.filter(function(d) { 
-				//         if( d["Language"] == "pt-br")
-				//         { 
-				//             return d;
-				//             console.log(filteredData5);
-				//         } 
-				//     })
-				//     var totalMean5 = [d3.mean(filteredData5.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData5.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean5);
-
-
-			    //    	var filteredData6 = data.filter(function(d) { 
-				//         if( d["Language"] == "French")
-				//         { 
-				//             return d;
-				//             console.log(filteredData6);
-				//         } 
-				//     })
-				//     var totalMean6 = [d3.mean(filteredData6.map(function(d){ return d.Price})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Features})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Safety})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Security})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Privacy})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Reliability})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.UserReviews})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.ExpertRecommendation})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.FriendorFamilyRecommendation})),
-			    //    d3.mean(filteredData6.map(function(d){ return d.Convenience}))	       ];
-			    //    test(totalMean6);
 
 
 
@@ -307,7 +201,8 @@
 
 
 			function test(totalMean, one_country_Mean, class_id) {
-				var margin = {top: 300, right: 100, bottom: 100, left: 100},
+				var margin = {top: 250, right: 100, bottom: 100, left: 100},
+				// legendPosition = {x: 25, y: 25},
 				width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
 				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
 						
@@ -353,17 +248,18 @@
 				////////////////////////////////////////////////////////////// 
 
 				var color = d3.scale.ordinal()
-					.range(["#EDC951","#CC333F","#00A0B0","#FFC0CB", "#800080", "A52A2A" ]);
+					.range(["#EDC951","#CC333F","#00A0B0","#FFC0CB", "#800080", "#A52A2A" ]);
 					
 				var radarChartOptions = {
-					 w: width *2/3,
-					  h: height *2/3,
+					 w: width,
+					  h: height,
 					  margin: margin,
+					  // legendPosition: legendPosition,
 					  maxValue: 0.5,
-					  levels: 5,
+					  levels: 4,
 					  roundStrokes: true,
 					  color: color
-				};
+				};	
 
 				//Call function to draw the Radar chart
 				RadarChart("." + class_id, data, radarChartOptions);
@@ -371,7 +267,8 @@
 			}
 
 			function test2(totalMean_language, class_id) {
-				var margin = {top: 300, right: 100, bottom: 100, left: 100},
+				var margin = {top: 250, right: 100, bottom: 100, left: 100},
+				// legendPosition = {x: 25, y: 25},
 				width = Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
 				height = Math.min(width, window.innerHeight - margin.top - margin.bottom - 20);
 						
@@ -397,7 +294,7 @@
 				for(var i = 0; i < totalMean_language.length; i++) {
 					// data[0][i].value = totalMean[i];
 					var cur_totalMean = totalMean_language[i];
-					if(cur_totalMean.length == 0) {
+					if(cur_totalMean.length == 0 || cur_totalMean.includes(0.0)) {
 						continue;
 					}
 
@@ -415,18 +312,51 @@
 				////////////////////////////////////////////////////////////// 
 
 				var color = d3.scale.ordinal()
-					.range(["#EDC951","#CC333F","#00A0B0","#FFC0CB", "#800080", "A52A2A" ]);
+					.range(["#EDC951","#CC333F","#00A0B0","#FFC0CB", "#800080", "#A52A2A" ]);
 					
 				var radarChartOptions = {
-					 w: width *2/3,
-					  h: height *2/3,
+					 w: width,
+					  h: height,
 					  margin: margin,
+					  // legendPosition: legendPosition,
 					  maxValue: 0.,
-					  levels: 5,
+					  levels: 4,
 					  roundStrokes: true,
 					  color: color
 				};
-				
+
+				// var legend_cont = d3.select("body")
+    //                 .append("div")
+    //                 .attr("class", "legendContainer");
+
+    //             //create unordered list
+				// var legend  = d3.select(".legendContainer")
+	   //              .append("ul")
+	   //              .attr("class", "legend");
+
+				// //add list item for every category
+				// var legend_items = legend.selectAll("li")
+    //                  .data(post_cats)
+    //                  .enter()
+    //                  .append("li")
+    //                  .html(function(d, i){return d.name});
+
+    //              // get legend items
+				// function getLegend(d){
+				//     var temp = "<img class='legend_icon' title='ICON_TITLE' \
+				//          src='ICON_LINK' alt='' width='50' height='50'> \
+				//          ICON_KIND";
+				//     temp = temp.replace("ICON_TITLE", d.name);
+				//     temp = temp.replace("ICON_LINK", d.url);
+				//     temp = temp.replace("ICON_KIND", d.name);
+				//     return(temp);
+				// };  
+
+				// var legend_items = legend.selectAll("li")
+    //                  ...
+    //                  //interesting part
+    //                  .html(function(d, i){return getLegend(d)
+
 
 				//Call function to draw the Radar chart
 				RadarChart("." + class_id, data, radarChartOptions);
