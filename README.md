@@ -37,7 +37,7 @@ This is the ReadMe file for project 1 of Group 5. The group members include Ling
 		
 * Our project can easily be run in the browser without any additional scripts. 
 
-   * $ git clone git@github.com:INFO-4602-5602/project-1-mozilla-5602-proj1-liusangzhang.git
+   * $ git clone https://github.com/INFO-4602-5602/project-1-mozilla-5602-proj1-liusangzhang.git
    
    * $ cd project-1-mozilla-5602-proj1-liusangzhang/
    
