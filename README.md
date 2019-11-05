@@ -35,4 +35,5 @@ This is the ReadMe file for project 1 of Group 5. The group members include Ling
    * Open a browser, type in localhost:8000 as address.
    * Click on mapChartsLinked.html to see the first visualization.
    * Click on RadarChart.html to see the second visualization.
-         * Note that we modified the column names for the radar chart visualization. You need the file 10000data.csv (included in the downloaded folder) to see this visualization.
+         
+	 * Note that we modified the column names for the radar chart visualization. You need the file 10000data.csv (included in the downloaded folder) to see this visualization.
