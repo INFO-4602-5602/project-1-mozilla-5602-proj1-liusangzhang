@@ -2,9 +2,15 @@
 This is the ReadMe file for project 1 of Group 5. The group members include Ling Liu(lili1299@colorado.edu) , Ziying Zhang(zizh8550@colorado.edu) and Lan Sang(lasa9094@colorado.edu). 
 
 ## Information about our visualizations
-* We created two main visualizations: (1) A world map interactive with a bar chart and a doughnut chart. (2) An interactive radar chart.
+* We created two main visualizations: 
+
+	(1) A world map interactive with a bar chart and a doughnut chart. 
+
+	(2) An interactive radar chart.
+
 * The first visualization is a world map on the right and a bar chart and a doughnut chart on the left. 
-    * The world map uses categorical data and quantitative data: categorical data are country names obtained by participants’ IP address and the country information participants provided in Question 10 of the survey; quantitative data is the number of participants from each country (counted by IP address and Question 10 answers respectively). We also used an [external data](https://github.com/jdamiani27/Data-Visualization-and-D3/blob/master/lesson4/world_countries.json) of geographical information, and changed the name of some countries to map the survey data. The map shows all the countries with information in the world_countries.json file, and colored the countries with the number of participants from IP address if there are participants from the corresponding country. When mouseovering a country, you will see the country become pink and a box popping out which shows the country name, the total number of participants from that country by IP address and the total number of participants from that country by self-identification. The consideration for this design is to highlight the difference between the country information obtained by IP address and participants’ self-identification, because physically being in one country does not necessarily mean belonging to that country. We think the self-identification is more reliable, though some participants chose not to answer Question 10.
+
+    * The world map uses categorical data and quantitative data: categorical data are country names obtained by participants’ IP address and the country information participants provided in Question 10 of the survey; quantitative data is the number of participants from each country (counted by IP address and Question 10 answers respectively). We also used an [external data](https://github.com/jdamiani27/Data-Visualization-and-D3/blob/master/lesson4/world_countries.json) of geographical information, and changed the name of some countries to map the survey data. The map shows all the countries with information in the *world_countries.json* file, and colored the countries with the number of participants from IP address if there are participants from the corresponding country. When mouseovering a country, you will see the country become pink and a box popping out which shows the country name, the total number of participants from that country by IP address and the total number of participants from that country by self-identification. The consideration for this design is to highlight the difference between the country information obtained by IP address and participants’ self-identification, because physically being in one country does not necessarily mean belonging to that country. We think the self-identification is more reliable, though some participants chose not to answer Question 10.
    
     * The doughnut chart uses categorical data and quantitative data: categorical data are the technology level participants evaluated themselves as by answering Question 1 “I consider myself:”, and there are 4 tech level categories plus one category for those not answering this question; quantitative data are how many participants fall into each category. The color of the doughnut slices indicates the categorical information, and the size of the doughnut slices depends on the number of participants in each category. The starting visualization of the doughnut chart is the analysis of the whole country. When you mouseover countries in the map, the doughnut chart will visualize the information for the corresponding countries. We design the interaction between the map and the doughnut chart to facilitate people exploring conditions in different countries.
 
@@ -21,19 +27,28 @@ This is the ReadMe file for project 1 of Group 5. The group members include Ling
 ## Team Roles
 
 * Ling Liu: Designed and implemented the map and bar chart visualization; Merged doughnut chart to world map.
+
 * Lan Sang: Designed doughnut chart visualization; implemented doughnut chart visualization; wrote ReadMe file
+
 * Ziying Zhang: Designed radar chart visualization; implemented radar chart visualization
 
 
 ## How to run our project
 		
 * Our project can easily be run in the browser without any additional scripts. 
+
    * $ git clone git@github.com:INFO-4602-5602/project-1-mozilla-5602-proj1-liusangzhang.git
+   
    * $ cd project-1-mozilla-5602-proj1-liusangzhang/
+   
    * $ python -m http.server
-   * Copy the data file 20171013111831-SurveyExport.csv to the folder project-1-mozilla-5602-proj1-liusangzhang/.
-   * Open a browser, type in localhost:8000 as address.
-   * Click on mapChartsLinked.html to see the first visualization.
-   * Click on RadarChart.html to see the second visualization.
+   
+   * Copy the data file *20171013111831-SurveyExport.csv* to the folder *project-1-mozilla-5602-proj1-liusangzhang/*.
+   
+   * Open a browser, type in *localhost:8000* as address.
+   
+   * Click on *mapChartsLinked.html* to see the first visualization.
+   
+   * Click on *RadarChart.html* to see the second visualization.
          
-	 * Note that we modified the column names for the radar chart visualization. You need the file 10000data.csv (included in the downloaded folder) to see this visualization.
+	  * Note that we modified the column names of CSV for the radar chart visualization to delete the space and those garbled characters in the Y to AH column title. We keep 10000 rows to match the GitHub file size limitation and the new csv called 10000data.csv. When you open the RadarChart.html, the data is from this csv. If you want to try the original data, please delete all space and keep the words before colon from Y to AH columns name, and change the csv name in RadarChart.html.
