@@ -52,3 +52,7 @@ This is the ReadMe file for project 1 of Group 5. The group members include Ling
    * Click on *RadarChart.html* to see the second visualization.
          
 	  * Note that we modified the column names of CSV for the radar chart visualization to delete the space and those garbled characters in the Y to AH column title. We keep 10000 rows to match the GitHub file size limitation and the new csv called 10000data.csv. When you open the RadarChart.html, the data is from this csv. If you want to try the original data, please delete all space and keep the words before colon from Y to AH columns name, and change the csv name in RadarChart.html.
+	  
+## References
+
+Sources that we referred to for this project are cited in the script at relevant position, noted with the format *Source: website-address*
