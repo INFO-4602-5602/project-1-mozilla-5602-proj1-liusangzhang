@@ -4,9 +4,9 @@ This is the ReadMe file for project 1 of Group 5. The group members include Ling
 ## Information about our visualizations
 * We created two main visualizations: 
 
-(1) A world map interactive with a bar chart and a doughnut chart. 
+	(1) A world map interactive with a bar chart and a doughnut chart. 
 
-(2) An interactive radar chart.
+	(2) An interactive radar chart.
 
 * The first visualization is a world map on the right and a bar chart and a doughnut chart on the left. 
 
