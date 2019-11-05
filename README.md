@@ -14,7 +14,25 @@ This is the ReadMe file for project 1 of Group 5. The group members include Ling
 
 ## Design Process
 
+* First, we analyzed the data and decided what and how to visualize it. We found that for the 10 survey questions, Questions 2 and 9 are multiple choices, Question 8 is ranking, and other questions are single choice questions. Since there is country information and there are a lot of countries in the data, we decide to use visualize the countries with map. We also found that the survey is only available in 6 Indo-European languages, which we think will cause bias in the sample, so we decided to highlight this bias in the data in all our visualizations. We want to visualize a single choice question, because this is the main question type of the survey. Considering that doughnut charts presents percentage information well which are the information we get if we aggregate participants’ answers for a single question, we decided to make a doughnut chart for Question 1. We think the ranking question is interesting and special, and radar chart can give a good comparison of different ranking. Therefore, we decided to make our second visualization radar charts for Question 8.
+
+* The second step is to refine our systems. We did three separate visualizations at first. However, we then found if we combine doughnut chart with the world map, our visualization will be more interactive--once mouseover the map, we could see languages used and user levels at the same time, which is more convenient for people to explore the question by country. So we connected the doughnut chart with the world map visualization and made them interactive. We also decided to add a bar chart to interact with the map in order to convey the theme of our visualization: language bias in the survey. For the radar chart, we first visualized the information of a country compared to the whole world in one radar chart, then added the drop down list for people to get visualization of different countries, and we added a second radar chart of data analysis by language, because we think that the preference is closely related to culture and language is a core part of culture.
+
 ## Team Roles
+
+* Ling Liu: Designed and implement the map and bar chart visualization; Merged doughnut chart to world map.
+* Lan Sang: Designed doughnut chart visualization; implemented doughnut chart visualization; wrote ReadMe file
+* Ziying Zhang: Designed radar chart visualization; implemented radar chart visualization
+
 
 ## How to run our project
 		
+* Our project can easily be run in the browser without any additional scripts. 
+   * $ git clone git@github.com:INFO-4602-5602/project-1-mozilla-5602-proj1-liusangzhang.git
+   * $ cd project-1-mozilla-5602-proj1-liusangzhang/
+   * $ python -m http.server
+   * Copy the data file 20171013111831-SurveyExport.csv to the folder project-1-mozilla-5602-proj1-liusangzhang/.
+   * Open a browser, type in localhost:8000 as address.
+   * Click on mapChartsLinked.html to see the first visualization.
+   * Click on RadarChart.html to see the second visualization.
+         * Note that we modified the column names for the radar chart visualization. You need the file 10000data.csv (included in the downloaded folder) to see this visualization.
