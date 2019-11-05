@@ -20,7 +20,7 @@ This is the ReadMe file for project 1 of Group 5. The group members include Ling
 
 ## Team Roles
 
-* Ling Liu: Designed and implement the map and bar chart visualization; Merged doughnut chart to world map.
+* Ling Liu: Designed and implemented the map and bar chart visualization; Merged doughnut chart to world map.
 * Lan Sang: Designed doughnut chart visualization; implemented doughnut chart visualization; wrote ReadMe file
 * Ziying Zhang: Designed radar chart visualization; implemented radar chart visualization
 
